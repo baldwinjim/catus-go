@@ -15,10 +15,17 @@ import (
 
 var tpl *template.Template
 
+var mongoClient *mongo.Client
+
 func init() {
-
-	//collection = client.Database("gotest").Collection("users")
-
+	var err error
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	mongoClient, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println("Connected")
+	}
 	// Parse templates
 	tpl = template.Must(template.ParseFiles("templates/login.gohtml"))
 }
@@ -42,11 +49,12 @@ func logmein(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	r := mux.NewRouter()
-	uc := controllers.NewUserController(getClient())
+	uc := controllers.NewUserController(mongoClient, "gotest", "users")
 	r.HandleFunc("/", logmein).Methods("GET")
 	r.HandleFunc("/user/{id}", uc.GetUsers).Methods("GET")
 	r.HandleFunc("/user", uc.AddUser).Methods("POST")
 	r.HandleFunc("/user/{id}", uc.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/user/login", uc.LoginUser).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

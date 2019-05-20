@@ -15,3 +15,9 @@ type User struct {
 	Org      string             `json:"org" bson:"org"`
 	ID       primitive.ObjectID `json:"id" bson:"_id"`
 }
+
+// UserLogin struct for login requests from UI
+type UserLogin struct {
+	Email    string `json:"email" bson:"email"`
+	Password string `json:"password" bson:"password"`
+}

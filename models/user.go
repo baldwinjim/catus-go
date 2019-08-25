@@ -14,6 +14,7 @@ type User struct {
 	Plan     int                `json:"plan" bson:"plan"`
 	Org      string             `json:"org" bson:"org"`
 	ID       primitive.ObjectID `json:"id" bson:"_id"`
+	Verified bool				`json:"verified" bson:"verified"`
 }
 
 // UserLogin struct for login requests from UI

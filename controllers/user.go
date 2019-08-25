@@ -32,6 +32,23 @@ func NewUserController(c *mongo.Client, database string, collection string) *Use
 	return &UserController{col}
 }
 
+// RegisterUser allows a new user to be registered
+func (uc UserController) RegisterUser(w http.ResponseWriter, r *http.Request) {
+	var t models.User
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&t)
+	if err != nil {
+		io.WriteString(w, "Error")
+	}
+	res, err := uc.userCollection.InsertOne(context.Background(), t)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = json.NewEncoder(w).Encode(res)
+	io.WriteString(w, "Register new user")
+
+}
+
 // LoginUser allows the user to login
 func (uc UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&loginRequest)

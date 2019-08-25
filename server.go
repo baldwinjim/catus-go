@@ -51,10 +51,11 @@ func main() {
 	r := mux.NewRouter()
 	uc := controllers.NewUserController(mongoClient, "gotest", "users")
 	r.HandleFunc("/", logmein).Methods("GET")
-	r.HandleFunc("/user/{id}", uc.GetUsers).Methods("GET")
 	r.HandleFunc("/user", uc.AddUser).Methods("POST")
-	r.HandleFunc("/user/{id}", uc.DeleteUser).Methods("DELETE")
 	r.HandleFunc("/user/login", uc.LoginUser).Methods("POST")
+	r.HandleFunc("/user/register", uc.RegisterUser).Methods("POST")
+	r.HandleFunc("/user/{id}", uc.GetUsers).Methods("GET")
+	r.HandleFunc("/user/{id}", uc.DeleteUser).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
